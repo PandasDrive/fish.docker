@@ -4,9 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+         crossorigin=""/>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+         crossorigin=""></script>
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to {{ title }}!</h1>
-    <p>This is our future fishing app.</p>
+
+    <div id="map"></div>
+
+    <script>
+        // --- DEFINE OUR MAP LAYERS ---
+
+        // 1. The "Street" layer (OpenStreetMap)
+        var streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        });
+
+        // 2. The "Satellite" layer (Esri World Imagery) - No API key needed!
+        var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19,
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        });
+
+        // --- INITIALIZE THE MAP ---
+
+        // Set the map's starting coordinates and zoom
+        var map = L.map('map', {
+            center: [61.2181, -149.9003],
+            zoom: 10,
+            layers: [streets] // Set the 'streets' layer as the default
+        });
+
+        // --- ADD CONTROLS ---
+
+        // 1. Create a "base maps" object to hold our layers
+        var baseMaps = {
+            "Streets": streets,
+            "Satellite": satellite
+        };
+
+        // 2. Add the layer control to the map (top-right corner)
+        L.control.layers(baseMaps).addTo(map);
+
+        // --- ADD A MARKER ---
+        
+        // Add a simple popup marker
+        L.marker([61.2181, -149.9003]).addTo(map)
+            .bindPopup('<b>{{ title }}</b><br>Welcome to Anchorage!')
+            .openPopup();
+    </script>
+
 </body>
 </html>
