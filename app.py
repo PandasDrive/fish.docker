@@ -1,15 +1,19 @@
-from flask import Flask
+from flask import Flask, render_template
 import os
+from dotenv import load_dotenv
 
-# Create the app instance
+# Load the variables from our .env file
+load_dotenv()
+
 app = Flask(__name__)
 
-# Define a route for the homepage
+# Get the title from the environment variables
+APP_TITLE = os.getenv('APP_TITLE')
+
 @app.route('/')
 def hello_fishing_app():
-    return 'Hello, Fishing App!'
+    # Pass the title variable into our HTML template
+    return render_template('index.html', title=APP_TITLE)
 
-# Run the app
 if __name__ == '__main__':
-    # '0.0.0.0' makes it accessible on your network (and inside Docker)
     app.run(debug=True, host='0.0.0.0', port=5000)
